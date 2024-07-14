@@ -9,7 +9,6 @@ import {
 import { Category } from '../../category/entities/category.entity';
 import { Transaction } from '../../transaction/entities/transaction.entity';
 
-
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
