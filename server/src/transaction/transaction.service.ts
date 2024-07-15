@@ -25,7 +25,7 @@ export class TransactionService {
   }
 
   async findAll (id: number) {
-    return await this.transactionRepository.findOne({
+    return await this.transactionRepository.find({
       where: {
         users: {
           id,
@@ -50,7 +50,26 @@ export class TransactionService {
     });
   }
 
-  remove (id: number) {
-    return `This action removes a #${id} transaction`;
+  async remove (id: number) {
+    const transaction = await this.transactionRepository.findOne({
+      where: { id },
+    });
+
+    if (!transaction) throw new NotFoundException('This category is already in use');
+    return this.transactionRepository.delete(id);
+  }
+
+  findAllWithPagination (id: number, page?: number, limit?: number) {
+    return this.transactionRepository.find({
+      where: { id },
+      relations: {
+        categories: true,
+      },
+      order: {
+        createdAt: 'DESC',
+      },
+      take: limit,
+      skip: (page - 1) * limit,
+    });
   }
 }
