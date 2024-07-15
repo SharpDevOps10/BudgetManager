@@ -37,6 +37,19 @@ export class TransactionService {
     });
   }
 
+  async findOne (id: number) {
+    return await this.transactionRepository.findOne({
+      where: {
+        users: {
+          id,
+        },
+      },
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+  }
+
   async update (id: number, updateTransactionDto: UpdateTransactionDto) {
     const transaction = await this.transactionRepository.findOne({
       where: { id },
