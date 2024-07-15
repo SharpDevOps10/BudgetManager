@@ -69,7 +69,7 @@ export class CategoryService {
   }
 
   async delete (id: number) {
-    const category = await this.checkCategoryExistence(id);
+    await this.checkCategoryExistence(id);
     return this.categoryRepository.delete(id);
   }
 

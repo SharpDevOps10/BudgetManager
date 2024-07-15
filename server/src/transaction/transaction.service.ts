@@ -1,26 +1,56 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Transaction } from './entities/transaction.entity';
 
 @Injectable()
 export class TransactionService {
-  create(createTransactionDto: CreateTransactionDto) {
-    return 'This action adds a new transaction';
+  constructor (
+    @InjectRepository(Transaction) private readonly transactionRepository: Repository<Transaction>,
+  ) {}
+
+  create (createTransactionDto: CreateTransactionDto, userId: number) {
+    const newTransaction = {
+      title: createTransactionDto.title,
+      amount: createTransactionDto.amount,
+      type: createTransactionDto.type,
+      user: { userId },
+      category: { id: +createTransactionDto.category },
+    };
+    if (!newTransaction) throw new BadRequestException('This category is already in use');
+
+    return this.transactionRepository.save(newTransaction);
   }
 
-  findAll() {
-    return `This action returns all transaction`;
+  async findAll (id: number) {
+    return await this.transactionRepository.findOne({
+      where: {
+        users: {
+          id,
+        },
+      },
+      order: {
+        createdAt: 'DESC',
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} transaction`;
+  async update (id: number, updateTransactionDto: UpdateTransactionDto) {
+    const transaction = await this.transactionRepository.findOne({
+      where: { id },
+    });
+    
+    if (!transaction) throw new NotFoundException('This category is already in use');
+
+    await this.transactionRepository.update(id, updateTransactionDto);
+    return this.transactionRepository.findOne({
+      where: { id },
+    });
   }
 
-  update(id: number, updateTransactionDto: UpdateTransactionDto) {
-    return `This action updates a #${id} transaction`;
-  }
-
-  remove(id: number) {
+  remove (id: number) {
     return `This action removes a #${id} transaction`;
   }
 }
