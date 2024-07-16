@@ -1,6 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./src/**/*.{html,js}"],
+  content: [
+    "./src/**/*.{html,js,ts,jsx,tsx}",
+  ],
   theme: {
     container: {
       padding: '2rem',
@@ -14,7 +16,6 @@ export default {
   },
   plugins: [
     require('@tailwindcss/forms'),
-    // ...
   ],
 }
 

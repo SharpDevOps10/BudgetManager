@@ -1,7 +1,7 @@
 import { FC } from 'react';
 
 const ErrorPage: FC = () => {
-  return <div>Auth</div>
+  return <div>ErrorPage</div>
 };
 
 export default ErrorPage;
